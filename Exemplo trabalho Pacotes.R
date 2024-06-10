@@ -1,5 +1,5 @@
+# Trabalho Pacote janitor
 library(janitor)
-
 
 #### Tabela de frequência e formatação #### 
 #adorn_ns
@@ -52,7 +52,110 @@ top_levels(as.factor(mtcars$hp), 2)
 untabyl(tabyl(mtcars$am))
 
 #### Formatação de dataframe ####
+# 1)clean_names
+Data_Frame <- data.frame(
+  "Nome " = c("Alice", "João", "Maria"),
+  "Idade (Anos)" = c(22.4, 19.7, 20.5),
+  "Data de Matrícula" = c(44204, 44235, 44266))
+Data_Frame <- clean_names(Data_Frame)
+print("Após limpar os nomes das colunas:")
+print(Data_Frame)
 
+# 2)convert_to_date
+convert_to_date("2009-07-06")
+convert_to_date(1285)
+convert_to_datetime(
+  c("2009-07-06", "40000.1", "40000", NA),
+  character_fun=lubridate::ymd_h, truncated=1, tz="UTC"
+)
+
+# 3)excel_numeric_to_date
+Data_Frame <- data.frame(
+  "Nome " = c("Alice", "João", "Maria"),
+  "Idade (Anos)" = c(22.4, 19.7, 20.5) ,
+  "Data de Matrícula" = c(44204, 44235, 44266))
+
+Data_Frame <- clean_names(Data_Frame)
+Data_Frame$data_de_matricula <- excel_numeric_to_date(Data_Frame$data_de_matricula)
+print(Data_Frame)
+
+# 4)find_header
+df_sem_cabecalho <- data.frame(
+  X1 = c(NA, "Nome", "Alice", "João", "Maria"),
+  X2 = c(NA, "Idade",22.4, 19.7, 20.5),
+  X3 = c(NA, "Data de Matrícula", 44204, 44235, 44266)
+)
+linha_de_cabeçalho <- find_header(df_sem_cabecalho)
+
+# 5)make_clean_names
+df <- data.frame(
+  "Nome " = c("Alice", "João", "Maria"),
+  "Idade (Anos)" = c(22.4, 19.7, 20.5) ,
+  "Data de Matrícula" = c("2021-01-01", "2021-02-01", "2021-03-01")
+  
+)
+nomes_colunas <- colnames(df)
+nomes_colunas_limpos <- make_clean_names(nomes_colunas)
+colnames(df) <- clean_column_names
+
+# 6)round_half_up
+df <- data.frame(
+  "Nome " = c("Alice", "João", "Maria"),
+  "Nota" = c(60.7, 50.8, 90.9)
+  
+)
+print(df)
+df$Nota<- round_half_up(df$Nota)
+
+
+print(df)
+
+# 7)round_to_fraction
+df <- data.frame(
+  "Nome " = c("Alice", "João", "Maria"),
+  "Nota" = c(60.7, 50.8, 90.9)
+  
+)
+print(df)
+df$Nota<- round_to_fraction(df$Nota, denominator = 3)
+
+
+print(df)
+
+# 8)row_to_names
+df <- data.frame(
+X1 = c(NA, "Name", "Alice", "Bob", "Charlie"),
+X2 = c(NA, "Age", 25, 30, 35),
+X3 = c(NA, "Joining Date", "2021-01-01", "2021-02-01", "2021-03-01")
+)
+print(df)
+df <- row_to_names(df, row_number = 2)
+
+print(df)
+
+# 9)sas_numeric_to_date
+df <- data.frame(
+  Nome = c("Alice", "João", "Maria"),
+  Data = c(21916, 21947, 21978) # Datas no formato numérico do SAS
+)
+print(df)
+df$Data <- sas_numeric_to_date(df$Data)
+
+# Exibir o data frame com a coluna de datas convertida
+print(df)
+
+# 10)signif_half_up
+df <- data.frame(
+  Nome = c("Alice", "Bob", "Charlie"),
+  Score = c(1.7345, 1.2855, 1.9365)
+)
+
+print(df)
+df_clean <- df %>%
+  mutate(Score = signif_half_up(Score, digits = 3))
+
+
+print(df_clean)
 
 #### Limpeza e exploração de dados ####
 # 1) chisq.test
