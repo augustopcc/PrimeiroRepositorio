@@ -54,73 +54,87 @@ untabyl(tabyl(mtcars$am))
 #### Formatação de dataframe ####
 
 
-#### Limpeza e exploração ####
-#chisq test
+#### Limpeza e exploração de dados ####
+# 1) chisq.test
 tab <- tabyl(mtcars, gear, cyl)
-janitor::chisq.test(tab)
+chisq.test(tab)
 
-#compare_df_cols
-compare_df_cols(data.frame(A=1, B = "C"), data.frame(B=2))
+# 2) compare_df_cols
+Df1 <- data.frame(A = 1,
+                  B = 3,
+                  C = "a",
+                  D = F)
+Df2 <- data.frame(B = 3,
+                  C = 3,
+                  E = NA)
+compare_df_cols(Df1,Df2,return = "all")
+compare_df_cols(Df1,Df2,return = "match")
+compare_df_cols(Df1,Df2,return = "mismatch")
 
-#compare_df_cols_same
-compare_df_cols_same(data.frame(A=1, B = "F"), data.frame(B=2))
 
-#describe_class
-class_description <- describe_class(mtcars)
-print(class_description)
+# 3) compare_df_cols_same
+Df1 <- data.frame(A = 1,
+                  B = 3,
+                  C = "a",
+                  D = F)
 
-# fisher test #
+Df2 <- data.frame(B = 3,
+                  C = 3,
+                  E = NA) 
+compare_df_cols_same(Df1,Df2)
+
+# 4) describe_class
+describe_class(Df1)
+describe_class("a")
+describe_class(F)
+describe_class(Inf)
+
+# 5) fisher.test
 tab <- tabyl(mtcars, gear, cyl)
 fisher.test(tab)
 
-#get_dupes
-Df <- data.frame(A=c("a","a","b","b","c"),
-                 B = c(1,1,2,2,3),
-                 C= c("d","d","f","h","h"),
-                 D = c(12,15,16,17,18))
-Df %>% get_dupes(A)
+# 6) get_dupes
+Df3 <- data.frame(A = c(1,1,1,1,1,1,2,2), 
+                  B = rep(c('B','C'), times = 4),
+                  C = LETTERS[1:8],
+                  D = rep(c(F,T), times = 4))
 
-#Get one to One
-Df <- data.frame(A=c("a","a","b","b","c"),
-                 B = c(1,1,2,2,3),
-                 C= c("d","d","f","h","h"),
-                 D = c(12,15,16,17,18))
+get_dupes(Df3,B)
+get_dupes(Df3,A)
+get_dupes(Df3,B,A)
 
-get_one_to_one(Df)
+# 7) get_one_to_one
+foo <- data.frame(
+  Lab_Test_Long=c("Cholesterol, LDL", "Cholesterol, LDL", "Glucose"),
+  Lab_Test_Short=c("CLDL", "CLDL", "GLUC"),
+  LOINC=c(12345, 12345, 54321),
+  Person=c("Sam", "Bill", "Sam"),
+  stringsAsFactors=FALSE
+)
+get_one_to_one(foo)
 
-#remove constante
-Df <- data.frame(A =c(1,2,3,NA),
-                 B=NA,
-                 C = c(1,NA,1,NA))
+# 8) remove_constant
+Df8 <- data.frame(A = c(1,1,1,1,1,1,1,1), 
+                  B = rep(c('B','C'), times = 4),
+                  C = LETTERS[1:8],
+                  D = rep(c(F,T), times = 4),)
 
-remove_constant(Df,na.rm = T, quiet = F)
+remove_constant(Df8)
 
-#remove empty
-Df <- data.frame(A =c(1,2,3,NA),
-                 B=NA,
-                 C = c(1,NA,1,NA))
-remove_empty(Df,which = "rows",cutoff = 0.01,quiet = F)
+# 9) remove_empty
+Df9 <- data.frame(A = c(1,1,1,1,1,1,NA,1), 
+                  B = c('B','C','B','C','B','C',NA,'C'),
+                  C = c(LETTERS[1:6],NA,'i'),
+                  D = NA,
+                  E = rep(c(NA,T), times = 4))
 
-#single value
-x <- c(1,1,2,1,1,NA)
-single_value(x,missing = c(1,NA))
+remove_empty(Df9,which = "rows")
+remove_empty(Df9,which = "cols")
+remove_empty(Df9,which = c("rows", "cols"))
 
+# 10) single_value 
 single_value(c(NA, 1))
-
-Df <- data.frame(A = c(1,2,NA),
-                 B = NA,
-                 C= c(1,2,1))
-
-a <- data.frame(A = rep(1:3, each = 2),
-                B = c(rep(4:6, each = 2))) 
-a %>% 
-  dplyr::group_by(A) %>%
-  dplyr::summarize(
-    B = single_value(B)
-  )
-
-#Get dupes
-
+single_value(c(NA, "a"), missing = c(NA, "a"))
 
 
 
